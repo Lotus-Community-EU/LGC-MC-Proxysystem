@@ -9,6 +9,7 @@ public class ReadyClass extends ListenerAdapter{
 	
 	public void onReady(ReadyEvent event) {
 		Main.logger.info("Bot has started as " + event.getJDA().getSelfUser().getEffectiveName() + " on " + event.getJDA().getGuilds().size() + " Guilds.");
+		Main.main.getProxy().getPluginManager().registerListener(Main.main, new ChatBridgeToDiscord(event.getJDA()));
 	}
 
 }
