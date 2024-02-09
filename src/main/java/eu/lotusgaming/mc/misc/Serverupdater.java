@@ -3,6 +3,7 @@ package eu.lotusgaming.mc.misc;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
 
 import eu.lotusgaming.mc.main.Main;
 import net.md_5.bungee.api.ProxyServer;
@@ -36,7 +37,7 @@ public class Serverupdater {
 				e.printStackTrace();
 			}
 			
-		}, 0, 0, null);
+		}, 0, 10, TimeUnit.SECONDS);
 	}
 	
 	public static void setOnlineStatus(boolean status) {
