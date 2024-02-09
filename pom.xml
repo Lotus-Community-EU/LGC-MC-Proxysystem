@@ -56,7 +56,15 @@
             <groupId>com.github.Carleslc.Simple-YAML</groupId>
             <artifactId>Simple-Yaml</artifactId>
             <version>${Simple-Yaml.version}</version>
+            <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+			<groupId>net.dv8tion</groupId>
+			<artifactId>JDA</artifactId>
+			<version>5.0.0-beta.13</version>
+			<scope>provided</scope>
+		</dependency>
     </dependencies>
 
     <build>

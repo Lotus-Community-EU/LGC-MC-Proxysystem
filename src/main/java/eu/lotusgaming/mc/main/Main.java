@@ -3,6 +3,8 @@ package eu.lotusgaming.mc.main;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import eu.lotusgaming.mc.misc.MySQL;
+import eu.lotusgaming.mc.misc.Serverupdater;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public class Main extends Plugin {
@@ -21,10 +23,13 @@ public class Main extends Plugin {
 		lm.preInit();
 		lm.init();
 		lm.postInit();
+		Serverupdater.setOnlineStatus(true);
 	}
 	
 	public void onDisable() {
 		main = null;
+		Serverupdater.setOnlineStatus(false);
+		MySQL.disconnect();
 	}
 
 }
