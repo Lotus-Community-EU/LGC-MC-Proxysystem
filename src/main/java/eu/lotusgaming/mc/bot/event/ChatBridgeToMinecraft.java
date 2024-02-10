@@ -24,40 +24,42 @@ public class ChatBridgeToMinecraft extends ListenerAdapter{
 			if(event.isFromType(ChannelType.TEXT)) {
 				TextChannel channel = event.getChannel().asTextChannel();
 				String srvName = ChatBridgeUtils.translateLongToString(channel.getIdLong());
-				if(srvName.equalsIgnoreCase("noChanAssigned")) {
-					if(guild.getIdLong() == ChatBridgeUtils.staff_guild) {
-						if(channel.getIdLong() == ChatBridgeUtils.staff_chat) {
+				if(!event.getAuthor().isBot()) {
+					if(srvName.equalsIgnoreCase("noChanAssigned")) {
+						if(guild.getIdLong() == ChatBridgeUtils.staff_guild) {
+							if(channel.getIdLong() == ChatBridgeUtils.staff_chat) {
+								if(event.getMessage().getContentStripped().length() <= 300) {
+									int players = 0;
+									for(ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
+										players++;
+										all.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§7[§cDCB§7] §a" + member.getRoles().get(0).getName() + " §7- §6" + member.getEffectiveName() + "§7: " + event.getMessage().getContentStripped()));
+										if(players == 0) {
+											event.getMessage().addReaction(Emoji.fromFormatted("<:deny:1204482005065146428>")).queue();
+										}else {
+											event.getMessage().addReaction(Emoji.fromFormatted("<:accept:1204482009355911168>")).queue();
+										}
+									}
+								}
+							}
+						}
+					}else {
+						if(guild.getIdLong() == ChatBridgeUtils.public_guild) {
 							if(event.getMessage().getContentStripped().length() <= 300) {
 								int players = 0;
 								for(ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
-									players++;
-									all.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§7[§cDCB§7] §a" + member.getRoles().get(0) + " §7- §6" + member.getEffectiveName() + "§7: " + event.getMessage().getContentStripped()));
+									if(all.getServer().getInfo().getName().equalsIgnoreCase(srvName)) {
+										players++;
+										all.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§7[§2DCB§7] §a" + member.getRoles().get(0).getName() + " §7- §6" + member.getEffectiveName() + "§7: " + event.getMessage().getContentStripped()));
+									}
 									if(players == 0) {
 										event.getMessage().addReaction(Emoji.fromFormatted("<:deny:1204482005065146428>")).queue();
 									}else {
 										event.getMessage().addReaction(Emoji.fromFormatted("<:accept:1204482009355911168>")).queue();
 									}
 								}
+							}else {
+								event.getMessage().addReaction(Emoji.fromFormatted("<:deny:1204482005065146428>")).queue();
 							}
-						}
-					}
-				}else {
-					if(guild.getIdLong() == ChatBridgeUtils.public_guild) {
-						if(event.getMessage().getContentStripped().length() <= 300) {
-							int players = 0;
-							for(ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
-								if(all.getServer().getInfo().getName().equalsIgnoreCase(srvName)) {
-									players++;
-									all.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§7[§2DCB§7] §a" + member.getRoles().get(0) + " §7- §6" + member.getEffectiveName() + "§7: " + event.getMessage().getContentStripped()));
-								}
-								if(players == 0) {
-									event.getMessage().addReaction(Emoji.fromFormatted("<:deny:1204482005065146428>")).queue();
-								}else {
-									event.getMessage().addReaction(Emoji.fromFormatted("<:accept:1204482009355911168>")).queue();
-								}
-							}
-						}else {
-							event.getMessage().addReaction(Emoji.fromFormatted("<:deny:1204482005065146428>")).queue();
 						}
 					}
 				}

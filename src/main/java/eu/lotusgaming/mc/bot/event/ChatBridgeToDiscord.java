@@ -39,7 +39,7 @@ public class ChatBridgeToDiscord implements Listener{
 							if(!message.isBlank()) {
 								sendStaffchat(player, message);
 								for(ProxiedPlayer all : ProxyServer.getInstance().getPlayers()) {
-									all.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§7[§cStaffchat§7] §a" + fancyName + " §7- §6" + player.getName() + "§7: " + event.getMessage()));
+									all.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§7[§cStaffchat§7] §a" + fancyName + " §7- §6" + player.getName() + "§7: " + event.getMessage().substring(1)));
 								}
 							}
 						}else {

@@ -63,6 +63,7 @@ public class LotusManager {
 		
 		BotMain.startBot();
 		Serverupdater.startScheduler();
+		new LotusController().initPrefixSystem();
 		
 		Main.logger.info("Post-Initialisation took " + (System.currentTimeMillis() - current) + "ms.");
 	}

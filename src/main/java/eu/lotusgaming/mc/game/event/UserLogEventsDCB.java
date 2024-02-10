@@ -19,7 +19,7 @@ public class UserLogEventsDCB implements Listener{
 	public void onServerSwitch(ServerSwitchEvent event) {
 		String server_old = "";
 		String playername = event.getPlayer().getName();
-		if(event.getPlayer().getServer() != null) {
+		if(event.getFrom() != null) {
 			server_old = event.getFrom().getName();
 		}
 		String server_new = event.getPlayer().getServer().getInfo().getName();

@@ -45,12 +45,12 @@ public class MC_VerifyIG extends Command{
 						player.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy(lc.getPrefix(Prefix.MAIN) + "§cYou don't have an outstanding verification process."));
 					}
 				}else if(service.equalsIgnoreCase("website")) {
-					player.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§cThe Website Verification is not yet implemented!"));
+					player.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy(lc.getPrefix(Prefix.MAIN) + "§cThe Website Verification is not yet implemented!"));
 				}else {
-					player.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§7Usage: /verify <discord|website> <Code>"));
+					player.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy(lc.getPrefix(Prefix.MAIN) + "§7Usage: /verify <discord|website> <Code>"));
 				}
 			}else {
-				player.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy("§7Usage: /verify <discord|website> <Code>"));
+				player.sendMessage(ChatMessageType.CHAT, TextComponent.fromLegacy(lc.getPrefix(Prefix.MAIN) + "§7Usage: /verify <discord|website> <Code>"));
 			}
 		}
 	}
