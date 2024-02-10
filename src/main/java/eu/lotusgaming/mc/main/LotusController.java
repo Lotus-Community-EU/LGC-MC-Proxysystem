@@ -7,7 +7,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 import eu.lotusgaming.mc.misc.MySQL;
+import eu.lotusgaming.mc.misc.Playerdata;
 import eu.lotusgaming.mc.misc.Prefix;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public class LotusController {
 	
@@ -64,6 +66,19 @@ public class LotusController {
 		}
 		return toReturn;
 	}
-
+	
+	public String getPlayerData(ProxiedPlayer player, Playerdata data) {
+		String toReturn = "";
+		try {
+			PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT " + data.getColumnName() + " FROM mc_users WHERE mcuuid = ?");
+			ps.setString(1, player.getUniqueId().toString());
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				toReturn = rs.getString(data.getColumnName());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return toReturn;
+	}
 }
-

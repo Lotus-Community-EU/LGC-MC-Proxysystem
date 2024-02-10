@@ -1,5 +1,6 @@
 package eu.lotusgaming.mc.main;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,6 +13,9 @@ public class Main extends Plugin {
 	public static Main main;
 	public static Logger logger;
 	public static String consoleSend = "§cPlease execute this command inGame!";
+	//for verification
+	public static HashMap<String, String> hashName = new HashMap<>();
+	public static HashMap<String, Long> hashId = new HashMap<>();
 	
 	public void onEnable() {
 		main = this;
