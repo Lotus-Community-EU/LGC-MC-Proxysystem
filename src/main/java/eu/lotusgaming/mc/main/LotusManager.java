@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import eu.lotusgaming.mc.game.command.HubCommand;
+import eu.lotusgaming.mc.game.command.MC_VerifyIG;
 import eu.lotusgaming.mc.misc.MySQL;
 import eu.lotusgaming.mc.misc.Serverupdater;
 
@@ -52,6 +53,7 @@ public class LotusManager {
 		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new HubCommand("hub"));
 		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new HubCommand("lobby"));
 		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new HubCommand("l"));
+		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new MC_VerifyIG("verify"));
 		
 		Main.logger.info("Initialisation took " + (System.currentTimeMillis() - current) + "ms.");
 	}
