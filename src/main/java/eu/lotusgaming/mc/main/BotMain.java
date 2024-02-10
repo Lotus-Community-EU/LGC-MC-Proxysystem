@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import eu.lotusgaming.mc.bot.event.ChatBridgeToMinecraft;
+import eu.lotusgaming.mc.bot.event.DC_MessageReport;
 import eu.lotusgaming.mc.bot.event.ReadyClass;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -31,6 +32,7 @@ public class BotMain {
 			builder.setStatus(OnlineStatus.ONLINE);
 			builder.addEventListeners(new ReadyClass());
 			builder.addEventListeners(new ChatBridgeToMinecraft());
+			builder.addEventListeners(new DC_MessageReport());
 			builder.build();
 		}else {
 			Main.logger.severe("Invalid or no bot token provided!");
