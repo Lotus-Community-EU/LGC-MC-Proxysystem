@@ -63,6 +63,12 @@
 			<groupId>net.dv8tion</groupId>
 			<artifactId>JDA</artifactId>
 			<version>${JDA.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>club.minnced</groupId>
+					<artifactId>opus-java</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
     </dependencies>
 
@@ -179,6 +185,7 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+        <finalName>lgc-proxysystem</finalName>
     </build>
 
 </project>

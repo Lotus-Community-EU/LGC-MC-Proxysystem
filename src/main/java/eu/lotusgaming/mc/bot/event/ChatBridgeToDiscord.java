@@ -1,12 +1,18 @@
 //Created by Chris Wille at 09.02.2024
 package eu.lotusgaming.mc.bot.event;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import eu.lotusgaming.mc.main.LotusController;
 import eu.lotusgaming.mc.misc.ChatBridgeUtils;
+import eu.lotusgaming.mc.misc.MySQL;
 import eu.lotusgaming.mc.misc.Playerdata;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -61,7 +67,25 @@ public class ChatBridgeToDiscord implements Listener{
 		String userId = lc.getPlayerData(sender, Playerdata.LotusChangeID);
 		String role = lc.getPlayerData(sender, Playerdata.PlayerGroup);
 		String res = "**[**" + role + " **|** <t:" + timestamp + ":f> **]** " + sender.getName() + " (" + userId + "): " + message;
-		channel.sendMessage(res).queue();
+		channel.sendMessage(res).addActionRow(
+				Button.danger("repgamemsg", "Report Message").withEmoji(Emoji.fromFormatted("<:tag:1204481995648798770>"))
+				).queue(ra -> {
+			saveMessage(ra.getIdLong(), sender.getUniqueId().toString(), message, ChatBridgeUtils.translateBCKeyToFancyName(sender.getServer().getInfo().getName()));
+		});
+	}
+	
+	void saveMessage(long messageId, String uuid, String message, String server) {
+		try {
+			PreparedStatement ps = MySQL.getConnection().prepareStatement("INSERT INTO mc_chatlog(dc_messageId,mc_message,server,mcuuid,sentAt) VALUES (?,?,?,?,?)");
+			ps.setLong(1, messageId);
+			ps.setString(2, message);
+			ps.setString(3, server);
+			ps.setString(4, uuid);
+			ps.setLong(5, System.currentTimeMillis());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	void sendStaffchat(ProxiedPlayer sender, String message) {
