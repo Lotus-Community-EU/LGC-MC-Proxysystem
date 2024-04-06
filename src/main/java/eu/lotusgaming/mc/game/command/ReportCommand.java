@@ -26,7 +26,10 @@ public class ReportCommand extends Command{
 		super(name);
 		this.jda = jda;
 	}
+	
+	//TODO continuation of report system.
 
+	@SuppressWarnings("unused")
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		if(sender instanceof ProxiedPlayer) {
@@ -59,6 +62,7 @@ public class ReportCommand extends Command{
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private int sendEmbed(ProxiedPlayer issuer, String targetName, String reason, boolean online) {
 		Guild staffGuild = jda.getGuildById(ChatBridgeUtils.staff_guild);
 		return 0;
