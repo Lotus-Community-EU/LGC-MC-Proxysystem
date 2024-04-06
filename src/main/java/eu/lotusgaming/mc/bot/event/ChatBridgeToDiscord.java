@@ -3,9 +3,11 @@ package eu.lotusgaming.mc.bot.event;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import eu.lotusgaming.mc.main.LotusController;
 import eu.lotusgaming.mc.misc.ChatBridgeUtils;
+import eu.lotusgaming.mc.misc.ChatbridgeEnums;
 import eu.lotusgaming.mc.misc.MySQL;
 import eu.lotusgaming.mc.misc.Playerdata;
 import net.dv8tion.jda.api.JDA;
@@ -64,10 +66,34 @@ public class ChatBridgeToDiscord implements Listener{
 		TextChannel channel = guild.getTextChannelById(channelId);
 		LotusController lc = new LotusController();
 		long timestamp = (System.currentTimeMillis() / 1000);
-		String userId = lc.getPlayerData(sender, Playerdata.LotusChangeID);
-		String role = lc.getPlayerData(sender, Playerdata.PlayerGroup);
-		String res = "**[**" + role + " **|** <t:" + timestamp + ":f> **]** " + sender.getName() + " (" + userId + "): " + message;
-		channel.sendMessage(res).addActionRow(
+		HashMap<ChatbridgeEnums, Boolean> map = ChatBridgeUtils.getChatbridgeSettings(sender.getUniqueId());
+		//String res = "**[**" + role + " **|** <t:" + timestamp + ":f> **]** " + sender.getName() + " (" + userId + "): " + message;
+		String klammerAuf = "**[** ";
+		String klammerZu = "**]** ";
+		String result = "";
+		result = klammerAuf;
+		if(map.get(ChatbridgeEnums.SHOW_ROLE)) {
+			String role = lc.getPlayerData(sender, Playerdata.PlayerGroup);
+			result += role + "**|**";
+		}
+		if(map.get(ChatbridgeEnums.SHOW_CLAN)) {
+			String clan = lc.getPlayerData(sender, Playerdata.Clan);
+			result += clan + "**|**";
+		}
+		result += "<t:" + timestamp + ":f> " + klammerZu;
+		if(map.get(ChatbridgeEnums.SHOW_NICK)) {
+			String nick = lc.getPlayerData(sender, Playerdata.Nick);
+			result += "(``" + nick + "``) ";
+		}
+		result += sender.getName();
+		if(map.get(ChatbridgeEnums.SHOW_ID)) {
+			String userId = lc.getPlayerData(sender, Playerdata.LotusChangeID);
+			result += " (" + userId + "): ";
+		}else {
+			result += ": ";
+		}
+		result += message;
+		channel.sendMessage(result).addActionRow(
 				Button.danger("repgamemsg", "Report Message").withEmoji(Emoji.fromFormatted("<:tag:1204481995648798770>"))
 				).queue(ra -> {
 			saveMessage(ra.getIdLong(), sender.getUniqueId().toString(), message, ChatBridgeUtils.translateBCKeyToFancyName(sender.getServer().getInfo().getName()));

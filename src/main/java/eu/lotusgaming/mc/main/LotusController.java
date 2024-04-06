@@ -81,4 +81,14 @@ public class LotusController {
 		}
 		return toReturn;
 	}
+	
+	public boolean translateBoolean(String input) {
+		switch(input) {
+		case "0": return false;
+		case "false": return false;
+		case "1": return true;
+		case "true": return true;
+		default: Main.logger.severe("Error in LotusController#translateBoolean() - expected 0,1,true,false but got " + input); return false;
+		}
+	}
 }
