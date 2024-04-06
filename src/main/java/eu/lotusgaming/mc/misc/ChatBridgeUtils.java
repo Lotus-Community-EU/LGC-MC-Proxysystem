@@ -1,8 +1,14 @@
 //Created by Chris Wille at 09.02.2024
 package eu.lotusgaming.mc.misc;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import eu.lotusgaming.mc.main.LotusController;
 
 public class ChatBridgeUtils {
 	
@@ -19,6 +25,16 @@ public class ChatBridgeUtils {
 	
 	public static long staff_guild = 1066812641768640542l;
 	public static long public_guild = 1153419306789507125l;
+	
+	public static HashMap<UUID, HashMap<ChatbridgeEnums, Boolean>> options = new HashMap<>();
+	/*
+	 * possible nodes: showRole, showID, showNick, showServerchange,
+	 * showJoin, showLeave, showClan
+	 * 
+	 * nodes for backend servers:
+	 * showBAdvancements, showBWorldChange,
+	 * showBLevelChange, showBkillEntity, showBdie
+	 */
 	
 	public static String translateLongToString(long input) {
 		HashMap<Long, String> map = currentServers();
@@ -68,6 +84,27 @@ public class ChatBridgeUtils {
 		map.put(survivalhx, "survivalhx");
 		map.put(skyblock, "skyblock");
 		map.put(farmserver, "farmserver");
+		return map;
+	}
+	
+	public static HashMap<ChatbridgeEnums, Boolean> getChatbridgeSettings(UUID uuid){
+		HashMap<ChatbridgeEnums, Boolean> map = new HashMap<>();
+		LotusController lc = new LotusController();
+		try {
+			PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT chatbridgeOptions FROM mc_users WHERE mcuuid = ?");
+			ps.setString(1, uuid.toString());
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				String[] splitByOption = rs.getString("chatbridgeOptions").split(";");
+				for(String string : splitByOption) {
+					String option = string.split("=")[0];
+					boolean state = lc.translateBoolean(string.split("=")[1]);
+					map.put(ChatbridgeEnums.getEnum(option), state);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return map;
 	}
 }
