@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -74,16 +75,19 @@ public class ChatBridgeToDiscord implements Listener{
 		result = klammerAuf;
 		if(map.get(ChatbridgeEnums.SHOW_ROLE)) {
 			String role = lc.getPlayerData(sender, Playerdata.PlayerGroup);
-			result += role + "**|**";
+			result += role + " **|** ";
 		}
 		if(map.get(ChatbridgeEnums.SHOW_CLAN)) {
 			String clan = lc.getPlayerData(sender, Playerdata.Clan);
-			result += clan + "**|**";
+			clan = ChatColor.stripColor(clan);
+			result += clan + " **|** ";
 		}
 		result += "<t:" + timestamp + ":f> " + klammerZu;
 		if(map.get(ChatbridgeEnums.SHOW_NICK)) {
 			String nick = lc.getPlayerData(sender, Playerdata.Nick);
-			result += "(``" + nick + "``) ";
+			if(!nick.equals("none")) {
+				result += "(``" + nick + "``) ";
+			}
 		}
 		result += sender.getName();
 		if(map.get(ChatbridgeEnums.SHOW_ID)) {
