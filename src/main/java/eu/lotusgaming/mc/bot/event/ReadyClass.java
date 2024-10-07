@@ -18,6 +18,7 @@ public class ReadyClass extends ListenerAdapter{
 		Main.main.getProxy().getPluginManager().registerListener(Main.main, new UserLogEventsDCB(event.getJDA()));
 		Main.main.getProxy().getPluginManager().registerListener(Main.main, new ChatBridgeInfoReceiver(event.getJDA()));
 		event.getJDA().addEventListener(new MC_Verify(event.getJDA()));
+		event.getJDA().addEventListener(new ChatReportContextHandler());
 	}
 
 }
