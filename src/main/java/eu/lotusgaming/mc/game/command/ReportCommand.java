@@ -1,10 +1,7 @@
-//Created by Chris Wille at 27.02.2024
 package eu.lotusgaming.mc.game.command;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
-import javax.annotation.Nonnull;
 
 import eu.lotusgaming.mc.main.LotusController;
 import eu.lotusgaming.mc.misc.ChatBridgeUtils;
@@ -68,7 +65,7 @@ public class ReportCommand extends Command{
 		return 0;
 	}
 	
-	void addReportToDB(ProxiedPlayer reporter, @Nonnull String targetName, String targetUUID, String reason, String server, boolean type, long msgid) {
+	void addReportToDB(ProxiedPlayer reporter, String targetName, String targetUUID, String reason, String server, boolean type, long msgid) {
 		try {
 			PreparedStatement ps = MySQL.getConnection().prepareStatement("INSERT INTO mc_reports(reporter_uuid, reporter_name, target_uuid, target_name, time, reason, server, type, dc_msgid) VALUES (?,?,?,?,?,?,?,?,?)");
 			ps.setString(1, reporter.getUniqueId().toString());
