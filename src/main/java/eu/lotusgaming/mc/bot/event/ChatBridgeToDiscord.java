@@ -82,7 +82,7 @@ public class ChatBridgeToDiscord implements Listener{
 			clan = ChatColor.stripColor(clan);
 			result += clan + " **|** ";
 		}
-		result += "<t:" + timestamp + ":f> " + klammerZu;
+		result += "<t:" + timestamp + ":R> " + klammerZu;
 		if(map.get(ChatbridgeEnums.SHOW_NICK)) {
 			String nick = lc.getPlayerData(sender, Playerdata.Nick);
 			if(!nick.equals("none")) {
@@ -97,9 +97,7 @@ public class ChatBridgeToDiscord implements Listener{
 			result += ": ";
 		}
 		result += message;
-		channel.sendMessage(result).addActionRow(
-				Button.danger("repgamemsg", "Report Message").withEmoji(Emoji.fromFormatted("<:tag:1204481995648798770>"))
-				).queue(ra -> {
+		channel.sendMessage(result).queue(ra -> {
 			saveMessage(ra.getIdLong(), sender.getUniqueId().toString(), message, ChatBridgeUtils.translateBCKeyToFancyName(sender.getServer().getInfo().getName()));
 		});
 	}
@@ -126,7 +124,7 @@ public class ChatBridgeToDiscord implements Listener{
 		String userId = lc.getPlayerData(sender, Playerdata.LotusChangeID);
 		String role = lc.getPlayerData(sender, Playerdata.PlayerGroup);
 		String server = ChatBridgeUtils.translateBCKeyToFancyName(sender.getServer().getInfo().getName());
-		String res = "**[**" + role + " **|** <t:" + timestamp + ":f> **|** " + server + "**]** " + sender.getName() + " (" + userId + "): " + message;
+		String res = "**[**" + role + " **|** <t:" + timestamp + ":R> **|** " + server + "**]** " + sender.getName() + " (" + userId + "): " + message;
 		channel.sendMessage(res).queue();
 	}
 }
