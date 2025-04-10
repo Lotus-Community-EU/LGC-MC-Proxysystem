@@ -5,10 +5,17 @@ import java.io.IOException;
 
 import org.simpleyaml.configuration.file.YamlFile;
 
+import eu.lotusgaming.mc.bot.command.MC_Verify;
+import eu.lotusgaming.mc.bot.event.ChatBridgeToDiscord;
 import eu.lotusgaming.mc.game.command.HubCommand;
 import eu.lotusgaming.mc.game.command.MC_VerifyIG;
+import eu.lotusgaming.mc.game.command.punishments.WarnCommand;
+import eu.lotusgaming.mc.game.event.ChatBridgeInfoReceiver;
+import eu.lotusgaming.mc.game.event.MaintenanceHandler;
+import eu.lotusgaming.mc.game.event.UserLogEventsDCB;
 import eu.lotusgaming.mc.misc.MySQL;
 import eu.lotusgaming.mc.misc.Serverupdater;
+import net.dv8tion.jda.api.JDA;
 
 public class LotusManager {
 	
@@ -55,7 +62,23 @@ public class LotusManager {
 		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new HubCommand("l"));
 		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new MC_VerifyIG("verify"));
 		
+		Main.main.getProxy().getPluginManager().registerListener(Main.main, new MaintenanceHandler());
+		
 		Main.logger.info("Initialisation took " + (System.currentTimeMillis() - current) + "ms.");
+	}
+	
+	public void init(JDA jda) {
+		long current = System.currentTimeMillis();
+		
+		jda.addEventListener(new MC_Verify(jda));
+		
+		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new WarnCommand("warn", jda));
+		
+		Main.main.getProxy().getPluginManager().registerListener(Main.main, new ChatBridgeToDiscord(jda));
+		Main.main.getProxy().getPluginManager().registerListener(Main.main, new UserLogEventsDCB(jda));
+		Main.main.getProxy().getPluginManager().registerListener(Main.main, new ChatBridgeInfoReceiver(jda));
+
+		Main.logger.info("Initialisation with JDA took " + (System.currentTimeMillis() - current) + "ms.");
 	}
 	
 	public void postInit() {
@@ -63,7 +86,10 @@ public class LotusManager {
 		
 		BotMain.startBot();
 		Serverupdater.startScheduler();
-		new LotusController().initPrefixSystem();
+		LotusController lc = new LotusController();
+		lc.initPrefixSystem();
+		lc.initLanguageSystem();
+		lc.initPlayerLanguages();
 		
 		Main.logger.info("Post-Initialisation took " + (System.currentTimeMillis() - current) + "ms.");
 	}
