@@ -13,8 +13,6 @@ import eu.lotusgaming.mc.misc.Playerdata;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.ProxyServer;
@@ -97,6 +95,7 @@ public class ChatBridgeToDiscord implements Listener{
 			result += ": ";
 		}
 		result += message;
+		result = ChatColor.stripColor(result);
 		channel.sendMessage(result).queue(ra -> {
 			saveMessage(ra.getIdLong(), sender.getUniqueId().toString(), message, ChatBridgeUtils.translateBCKeyToFancyName(sender.getServer().getInfo().getName()));
 		});
