@@ -4,6 +4,7 @@ package eu.lotusgaming.mc.misc.util;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import eu.lotusgaming.mc.misc.MySQL;
 
@@ -11,6 +12,7 @@ public class MaintenanceInfo {
 	
 	private String reason;
 	private boolean state;
+	private List<String> players;
 	
 	public MaintenanceInfo() {
 		try (PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT isEnabled,reason FROM mc_maintenance WHERE mc_uuid=?")) {
@@ -22,6 +24,19 @@ public class MaintenanceInfo {
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		try (PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT mc_uuid,isEnabled,id FROM mc_maintenance")) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+            	if(rs.getInt("id") != 1) {
+            		if(rs.getBoolean("isEnabled")) {
+            			this.players.add(rs.getString("mc_uuid"));
+            		}
+            	}
+            }
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public String getReason() {
@@ -30,5 +45,9 @@ public class MaintenanceInfo {
 	
 	public boolean getState() {
 		return state;
+	}
+	
+	public List<String> getAllowedUniqueIDs(){
+		return players;
 	}
 }

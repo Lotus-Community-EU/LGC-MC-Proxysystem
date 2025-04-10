@@ -19,6 +19,11 @@ public class MaintenanceHandler implements Listener{
 		MaintenanceInfo mi = new MaintenanceInfo();
 		LotusController lc = new LotusController();
 		if (mi.getState()) {
+			if (mi.getAllowedUniqueIDs().contains(uuid)) {
+				Main.logger.info("Player " + uuid + " is allowed to join.");
+				event.setCancelled(false);
+				return;
+			}
 			event.setCancelled(true);
 			event.getConnection().disconnect(TextComponent.fromLegacy(lc.getPrefix(Prefix.SCOREBOARD) + "\n \n§cThe Server is currently in maintenance mode. \n§7Reason: \n§f" + mi.getReason()));
 			//event.getConnection().disconnect("§cServer is currently in maintenance mode.\n§7Reason: " + mi.getReason());
