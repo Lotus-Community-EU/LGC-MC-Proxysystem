@@ -1,6 +1,6 @@
 name: LGC_Proxysystem
-author: ChrisWille2856
-version: 1.0.0
+author: MauriceLPs
+version: 1.2.1.4s
 main: eu.lotusgaming.mc.main.Main
 libraries:
   - net.dv8tion:JDA:${JDA.version}

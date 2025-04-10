@@ -25,13 +25,14 @@ import net.dv8tion.jda.api.interactions.modals.Modal;
 public class ChatReportContextHandler extends ListenerAdapter {
 	
 	static HashMap<Member, ReportData> map = new HashMap<>();
+	static HashMap<Long, Long> user_messageMap = new HashMap<>();
 	
 	@Override
 	public void onMessageContextInteraction(MessageContextInteractionEvent event) {
 		if(event.isFromGuild()) {
 			Guild guild = event.getGuild();
 			Member member = event.getMember();
-			if(event.getName().equals("Report this!")) {
+			if(event.getName().equals("Report this! (DCB)")) {
 				if(guild.getIdLong() == 1153419306789507125L) {
 					long messageId = event.getTarget().getIdLong();
 					if(isMCMessage(messageId)) {
@@ -63,6 +64,7 @@ public class ChatReportContextHandler extends ListenerAdapter {
 	public void onModalInteraction(ModalInteractionEvent event) {
 		Member member = event.getMember();
 		if(event.getModalId().equals("mdl_dcbreport")) {
+			//Modal when User is reporting message
 			ReportData rd = null;
 			if(map.containsKey(member)) {
 				rd = map.get(member);
@@ -83,17 +85,47 @@ public class ChatReportContextHandler extends ListenerAdapter {
 					).queue();
 			map.remove(member);
 			event.deferReply(true).addContent("Report has been sent!").queue();
+		} else if (event.getModalId().equals("admincmt_chatrepmdl_inv")) {
+			// Modal when Admin is invalidating message
+			long messageId = user_messageMap.get(member.getIdLong());
+			user_messageMap.remove(member.getIdLong());
+			String reason = event.getValue("admincmt_chatrep").getAsString();
+			updateMessageReportStatus(messageId, event.getUser().getIdLong(), "INVALIDATED", reason);
+			event.deferReply(true).addContent("Report has been invalidated!").queue();
+		} else if (event.getModalId().equals("admincmt_chatrepmdl_acc")) {
+			// Modal when Admin is accepting message
+			long messageId = user_messageMap.get(member.getIdLong());
+			user_messageMap.remove(member.getIdLong());
+			String reason = event.getValue("admincmt_chatrep").getAsString();
+			updateMessageReportStatus(messageId, event.getUser().getIdLong(), "ACCEPTED", reason);
+			event.deferReply(true).addContent("Report has been accepted!").queue();
 		}
 	}
 	
 	@Override
 	public void onButtonInteraction(ButtonInteractionEvent event) {
-		Guild guild = event.getGuild();
-		Member member = event.getMember();
 		if(event.getComponentId().equals("claim_chatrep")) {
-			event.deferReply(true).addContent("This function is in development. Please bear with me :)\nETA is in max 4 - 6 weeks.").queue();
+			TextInput reasonInput = TextInput.create("admincmt_chatrep", "Reason", TextInputStyle.PARAGRAPH)
+					.setRequiredRange(32, 512)
+					.setPlaceholder("Describe as good as you can, why you are accepting this report.")
+					.build();
+			Modal modal = Modal.create("admincmt_chatrepmdl_acc", "Accept Report")
+					.addComponents(ActionRow.of(reasonInput))
+					.build();
+			event.replyModal(modal).queue();
+			user_messageMap.put(event.getUser().getIdLong(), event.getMessageIdLong());
+			//event.deferReply(true).addContent("This function is in development. Please bear with me :)\nETA is in max 4 - 6 weeks.").queue();
 		}else if(event.getComponentId().equals("invalidate_chatrep")) {
-			event.deferReply(true).addContent("This function is in development. Please bear with me :)\nETA is in max 4 - 6 weeks.").queue();
+			TextInput reasonInput = TextInput.create("admincmt_chatrep", "Reason", TextInputStyle.PARAGRAPH)
+					.setRequiredRange(32, 512)
+					.setPlaceholder("Describe as good as you can, why you are invalidating this report.")
+					.build();
+			Modal modal = Modal.create("admincmt_chatrepmdl_inv", "Invalidate Report")
+					.addComponents(ActionRow.of(reasonInput))
+					.build();
+			event.replyModal(modal).queue();
+			user_messageMap.put(event.getUser().getIdLong(), event.getMessageIdLong());
+			//event.deferReply(true).addContent("This function is in development. Please bear with me :)\nETA is in max 4 - 6 weeks.").queue();
 		}
 	}
 	
@@ -140,6 +172,20 @@ public class ChatReportContextHandler extends ListenerAdapter {
 			ps.setString(4, reason);
 			ps.setString(5, "REPORTED");
 			ps.setLong(6, messageId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void updateMessageReportStatus(long messageId, long adminId, String status, String reason) {
+		try {
+			PreparedStatement ps = MySQL.getConnection()
+					.prepareStatement("UPDATE mc_chatlog SET reportStatus = ?, adminId = ?, reportAdminCmt = ? WHERE dc_messageId = ?");
+			ps.setString(1, status);
+			ps.setLong(2, adminId);
+			ps.setString(3, reason);
+			ps.setLong(4, messageId);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
