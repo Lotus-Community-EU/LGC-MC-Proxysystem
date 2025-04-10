@@ -1,6 +1,9 @@
 package eu.lotusgaming.mc.main;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +31,7 @@ public class Main extends Plugin {
 		lm.init();
 		lm.postInit();
 		Serverupdater.setOnlineStatus(true);
+		restartScheduler();
 	}
 	
 	public void onDisable() {
@@ -35,5 +39,17 @@ public class Main extends Plugin {
 		Serverupdater.setOnlineStatus(false);
 		MySQL.disconnect();
 	}
-
+	
+	private void restartScheduler() {
+		getProxy().getScheduler().schedule(main, new Runnable() {
+			@Override
+			public void run() {
+				String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
+				if(time.matches("03:00:02")) {
+					getProxy().stop();
+				}
+			}
+		}, 0, 1, TimeUnit.SECONDS);
+	}
+	
 }
