@@ -23,14 +23,15 @@
     </developers>
 
     <properties>
+    	<javaVersion>17</javaVersion>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!-- Project Versions -->
-        <bungeecord-api.version>1.20-R0.2</bungeecord-api.version>
+        <bungeecord-api.version>1.21-R0.2</bungeecord-api.version>
         <Simple-Yaml.version>1.8.4</Simple-Yaml.version>
-        <JDA.version>5.1.2</JDA.version>
+        <JDA.version>5.3.2</JDA.version>
     </properties>
 
     <repositories>
@@ -69,6 +70,12 @@
 					<artifactId>opus-java</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		
+		<dependency>
+    		<groupId>com.google.code.gson</groupId>
+    		<artifactId>gson</artifactId>
+    		<version>2.11.0</version>
 		</dependency>
     </dependencies>
 
