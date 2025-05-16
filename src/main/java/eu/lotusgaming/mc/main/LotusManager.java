@@ -9,18 +9,21 @@ import eu.lotusgaming.mc.bot.command.MC_Verify;
 import eu.lotusgaming.mc.bot.event.ChatBridgeToDiscord;
 import eu.lotusgaming.mc.game.command.HubCommand;
 import eu.lotusgaming.mc.game.command.MC_VerifyIG;
+import eu.lotusgaming.mc.game.command.SpotifyCommand;
 import eu.lotusgaming.mc.game.command.punishments.WarnCommand;
 import eu.lotusgaming.mc.game.event.ChatBridgeInfoReceiver;
 import eu.lotusgaming.mc.game.event.MaintenanceHandler;
 import eu.lotusgaming.mc.game.event.UserLogEventsDCB;
 import eu.lotusgaming.mc.misc.MySQL;
 import eu.lotusgaming.mc.misc.Serverupdater;
+import eu.lotusgaming.mc.web.SpotifyCallbackHttpServer;
 import net.dv8tion.jda.api.JDA;
 
 public class LotusManager {
 	
 	public static File mainFolder = new File("plugins/LotusGaming");
 	public static File mainConfig = new File("plugins/LotusGaming/config.yml");
+	public static String spotifyId, spotifySecret;
 	
 	public void preInit() {
 		long current = System.currentTimeMillis();
@@ -37,6 +40,8 @@ public class LotusManager {
 			cfg.addDefault("MySQL.Password", "pass");
 			cfg.addDefault("System.Bottoken", "The Bottoken goes in here.");
 			cfg.addDefault("System.HashPass", "SomeRandompassword");
+			cfg.addDefault("Spotify.ClientID", "ClientID");
+			cfg.addDefault("Spotify.ClientSecret", "ClientSecret");
 			cfg.options().copyDefaults(true);
 			cfg.save();
 		} catch (IOException e) {
@@ -47,6 +52,8 @@ public class LotusManager {
 			if(!cfg.getString("MySQL.Password").equalsIgnoreCase("pass")) {
 				MySQL.connect(cfg.getString("MySQL.Host"), cfg.getString("MySQL.Port"), cfg.getString("MySQL.Database"), cfg.getString("MySQL.Username"), cfg.getString("MySQL.Password"));
 			}
+			spotifyId = cfg.getString("Spotify.ClientID");
+			spotifySecret = cfg.getString("Spotify.ClientSecret");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -61,6 +68,7 @@ public class LotusManager {
 		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new HubCommand("lobby"));
 		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new HubCommand("l"));
 		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new MC_VerifyIG("verify"));
+		Main.main.getProxy().getPluginManager().registerCommand(Main.main, new SpotifyCommand("spotify"));
 		
 		Main.main.getProxy().getPluginManager().registerListener(Main.main, new MaintenanceHandler());
 		
@@ -90,6 +98,12 @@ public class LotusManager {
 		lc.initPrefixSystem();
 		lc.initLanguageSystem();
 		lc.initPlayerLanguages();
+		
+		try {
+			new SpotifyCallbackHttpServer(spotifyId, spotifySecret, "http://88.198.12.152:8081/spotify-callback");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		Main.logger.info("Post-Initialisation took " + (System.currentTimeMillis() - current) + "ms.");
 	}
