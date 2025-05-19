@@ -47,7 +47,7 @@ public class SpotifySyncTask {
 							if (nP.isPlaying() || !nP.getTrackId().equals(lastTrackId)) {
 								trackCache.put(uuid, nP.getTrackId());
 								updateNowPlaying(uuid, nP);
-								Main.logger.info("Updated NowPlaying for " + uuid.toString() + " to " + nP.getTrack() + " by " + nP.getArtist() + " and is playing: " + nP.isPlaying());
+								Main.logger.info("Updated NowPlaying for " + uuid.toString() + " to " + nP.getTrack() + " by " + nP.getArtist() + " and is playing: " + nP.isPlaying() + " and is local: " + nP.isLocalTrack());
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -55,7 +55,7 @@ public class SpotifySyncTask {
 					});
 				}
 			}
-		}, 0, 30, java.util.concurrent.TimeUnit.SECONDS);
+		}, 0, 10, java.util.concurrent.TimeUnit.SECONDS);
 	}
 
 	public List<PlayerRecord> getAllWithSpotify() {
@@ -77,12 +77,14 @@ public class SpotifySyncTask {
 
 	void updateNowPlaying(UUID uuid, NowPlaying nowPlaying) {
 		try (PreparedStatement ps = MySQL.getConnection()
-				.prepareStatement("UPDATE mc_users SET spotifyTrack = ?, spotifyArtist = ?, spotifyPlaying = ? WHERE mcuuid = ?")) {
+				.prepareStatement("UPDATE mc_users SET spotifyTrack = ?, spotifyArtist = ?, spotifyPlaying = ?, spotifyLocal = ? WHERE mcuuid = ?")) {
 			ps.setString(1, nowPlaying.getTrack());
 			ps.setString(2, nowPlaying.getArtist());
 			ps.setBoolean(3, nowPlaying.isPlaying());
-			ps.setString(4, uuid.toString());
+			ps.setBoolean(4, nowPlaying.isLocalTrack());
+			ps.setString(5, uuid.toString());
 			ps.executeUpdate();
+			ps.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
