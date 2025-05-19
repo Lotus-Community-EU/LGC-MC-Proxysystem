@@ -4,6 +4,7 @@ package eu.lotusgaming.mc.misc.util;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.lotusgaming.mc.misc.MySQL;
@@ -27,6 +28,7 @@ public class MaintenanceInfo {
 		
 		try (PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT mc_uuid,isEnabled,id FROM mc_maintenance")) {
             ResultSet rs = ps.executeQuery();
+            this.players = new ArrayList<>();
             while (rs.next()) {
             	if(rs.getInt("id") != 1) {
             		if(rs.getBoolean("isEnabled")) {
