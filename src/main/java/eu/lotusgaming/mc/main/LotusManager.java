@@ -16,7 +16,8 @@ import eu.lotusgaming.mc.game.event.MaintenanceHandler;
 import eu.lotusgaming.mc.game.event.UserLogEventsDCB;
 import eu.lotusgaming.mc.misc.MySQL;
 import eu.lotusgaming.mc.misc.Serverupdater;
-import eu.lotusgaming.mc.web.SpotifyCallbackHttpServer;
+import eu.lotusgaming.mc.misc.util.SpotifyService;
+import eu.lotusgaming.mc.misc.util.SpotifySyncTask;
 import net.dv8tion.jda.api.JDA;
 
 public class LotusManager {
@@ -98,12 +99,9 @@ public class LotusManager {
 		lc.initPrefixSystem();
 		lc.initLanguageSystem();
 		lc.initPlayerLanguages();
-		
-		try {
-			new SpotifyCallbackHttpServer(spotifyId, spotifySecret, "http://88.198.12.152:8081/spotify-callback");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+		SpotifySyncTask spotifySyncTask = new SpotifySyncTask(new SpotifyService(spotifyId, spotifySecret));
+		spotifySyncTask.start();
 		
 		Main.logger.info("Post-Initialisation took " + (System.currentTimeMillis() - current) + "ms.");
 	}

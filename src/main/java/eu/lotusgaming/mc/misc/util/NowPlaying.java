@@ -20,6 +20,10 @@ public class NowPlaying {
 	public String getTrack() {
 		return this.track;
 	}
+
+	public String getTrackId() {
+		return this.trackId;
+	}
 	
 	public boolean isPlaying() {
 		return this.isPlaying;

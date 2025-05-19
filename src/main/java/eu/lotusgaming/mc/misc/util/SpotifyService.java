@@ -82,6 +82,7 @@ public class SpotifyService {
             	sb.append(s + ", ");
             }
             String artist = sb.toString();
+			artist = artist.substring(0, artist.length() - 2);
             
             return new NowPlaying(track, artist, isPlaying, trackId);
         }

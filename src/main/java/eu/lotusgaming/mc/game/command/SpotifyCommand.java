@@ -24,7 +24,7 @@ public class SpotifyCommand extends Command{
 		super(name);
 		// TODO Auto-generated constructor stub
 	}
-
+//gaga dudu
 	@Override
 	public void execute(CommandSender sender, String[] args) {
 		if(!(sender instanceof ProxiedPlayer)) {
@@ -38,7 +38,7 @@ public class SpotifyCommand extends Command{
 				try {
 					String uri = "https://accounts.spotify.com/authorize?client_id=" + LotusManager.spotifyId
 							+ "&response_type=code"
-							+ "&redirect_uri=" + URLEncoder.encode("http://88.198.12.152:8081/spotify-callback", "UTF-8")
+							+ "&redirect_uri=" + URLEncoder.encode("https://auth.lotuscommunity.eu/spotify-callback.php", "UTF-8")
 							+ "&scope=user-read-currently-playing"
 							+ "&state=" + player.getUniqueId().toString();
 					TextComponent message = new TextComponent(TextComponent.fromLegacy(lc.getPrefix(Prefix.MAIN) + "§aPlease connect your Spotify account by clicking this message."));
