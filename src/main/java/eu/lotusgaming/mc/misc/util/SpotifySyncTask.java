@@ -5,10 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 
 import eu.lotusgaming.mc.main.Main;
 import eu.lotusgaming.mc.misc.MySQL;
@@ -18,7 +16,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public class SpotifySyncTask {
 
 	private final SpotifyService spotifyService;
-	private final Map<UUID, String> trackCache = new ConcurrentHashMap<>();
 
 	public SpotifySyncTask(SpotifyService spotifyService) {
 		this.spotifyService = spotifyService;
@@ -43,12 +40,8 @@ public class SpotifySyncTask {
 							if (nP == null)
 								return;
 
-							String lastTrackId = trackCache.get(uuid);
-							if (nP.isPlaying() || !nP.getTrackId().equals(lastTrackId)) {
-								trackCache.put(uuid, nP.getTrackId());
-								updateNowPlaying(uuid, nP);
-								Main.logger.info("Updated NowPlaying for " + uuid.toString() + " to " + nP.getTrack() + " by " + nP.getArtist() + " and is playing: " + nP.isPlaying() + " and is local: " + nP.isLocalTrack());
-							}
+							updateNowPlaying(uuid, nP);
+							Main.logger.info("Updated NowPlaying for " + uuid.toString() + " to " + nP.getTrack() + " by " + nP.getArtist() + " and is playing: " + nP.isPlaying() + " and is local: " + nP.isLocalTrack() + " and Playtime: " + nP.getProgressMs() + "/" + nP.getDurationMs());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -77,12 +70,14 @@ public class SpotifySyncTask {
 
 	void updateNowPlaying(UUID uuid, NowPlaying nowPlaying) {
 		try (PreparedStatement ps = MySQL.getConnection()
-				.prepareStatement("UPDATE mc_users SET spotifyTrack = ?, spotifyArtist = ?, spotifyPlaying = ?, spotifyLocal = ? WHERE mcuuid = ?")) {
+				.prepareStatement("UPDATE mc_users SET spotifyTrack = ?, spotifyArtist = ?, spotifyPlaying = ?, spotifyLocal = ?, spotifyProgressMs = ?, spotifyDurationMs = ? WHERE mcuuid = ?")) {
 			ps.setString(1, nowPlaying.getTrack());
 			ps.setString(2, nowPlaying.getArtist());
 			ps.setBoolean(3, nowPlaying.isPlaying());
 			ps.setBoolean(4, nowPlaying.isLocalTrack());
-			ps.setString(5, uuid.toString());
+			ps.setLong(5, nowPlaying.getProgressMs());
+			ps.setLong(6, nowPlaying.getDurationMs());
+			ps.setString(7, uuid.toString());
 			ps.executeUpdate();
 			ps.close();
 		} catch (Exception e) {

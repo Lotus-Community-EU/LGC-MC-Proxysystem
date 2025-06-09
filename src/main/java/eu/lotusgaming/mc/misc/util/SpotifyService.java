@@ -82,6 +82,8 @@ public class SpotifyService {
 			boolean isLocal = json.getAsJsonObject("item").get("is_local").getAsBoolean();
 			List<String> artists = new ArrayList<>();
 			String artist = "";
+			long progressMs = json.get("progress_ms").getAsLong();
+			long durationMs = json.getAsJsonObject("item").get("duration_ms").getAsLong();
 			if (!json.getAsJsonObject("item").getAsJsonArray("artists").isJsonNull()) {
 				json.getAsJsonObject("item").getAsJsonArray("artists").forEach(rA -> {
 					artists.add(rA.getAsJsonObject().get("name").getAsString());
@@ -100,7 +102,7 @@ public class SpotifyService {
 				artist = "Unknown Artist";
 			}
 
-			return new NowPlaying(track, artist, isPlaying, trackId, isLocal);
+			return new NowPlaying(track, artist, isPlaying, trackId, isLocal, progressMs, durationMs);
 		}
 	}
 
