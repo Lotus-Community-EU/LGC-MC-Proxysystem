@@ -48,13 +48,13 @@ public class SpotifySyncTask {
 					});
 				}
 			}
-		}, 0, 10, java.util.concurrent.TimeUnit.SECONDS);
+		}, 0, 5, java.util.concurrent.TimeUnit.SECONDS);
 	}
 
 	public List<PlayerRecord> getAllWithSpotify() {
 		List<PlayerRecord> players = new ArrayList<>();
-		try (PreparedStatement ps = MySQL.getConnection()
-				.prepareStatement("SELECT * FROM mc_users WHERE spotifyRefreshToken IS NOT NULL AND isOnline = 1")) {
+		try (PreparedStatement ps = MySQL.getConnection().prepareStatement("SELECT * FROM mc_users WHERE spotifyRefreshToken IS NOT NULL AND isOnline = 1 AND scoreboardState = 11")) { 
+			//Only get people, who have a spotify refresh token AND are online AND have the scoreboard state set to Spotify!
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				UUID uuid = UUID.fromString(rs.getString("mcuuid"));
