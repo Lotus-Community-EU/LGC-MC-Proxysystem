@@ -64,6 +64,10 @@ public class SpotifyService {
 		conn.setRequestMethod("GET");
 		conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
+		if(conn.getResponseCode() == 204) {
+			return new NowPlaying("", "", 0, "", false, 0, 0); // No track is currently playing
+		}
+
 		if (conn.getResponseCode() != 200) {
 			throw new IOException("Failed to fetch now playing: " + conn.getResponseCode());
 		}
@@ -71,7 +75,7 @@ public class SpotifyService {
 		try (InputStream is = conn.getInputStream()) {
 			Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8);
 			JsonObject json = gson.fromJson(reader, JsonObject.class);
-			boolean isPlaying = json.get("is_playing").getAsBoolean();
+			int playCode = json.get("is_playing").getAsBoolean() ? 2 : 1;
 			String track = json.getAsJsonObject("item").get("name").getAsString();
 			String trackId = "";
 			if (json.getAsJsonObject("item").get("id").isJsonNull()) {
@@ -102,7 +106,7 @@ public class SpotifyService {
 				artist = "Unknown Artist";
 			}
 
-			return new NowPlaying(track, artist, isPlaying, trackId, isLocal, progressMs, durationMs);
+			return new NowPlaying(track, artist, playCode, trackId, isLocal, progressMs, durationMs);
 		}
 	}
 
