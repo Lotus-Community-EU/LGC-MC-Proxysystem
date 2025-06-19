@@ -41,7 +41,7 @@ public class SpotifySyncTask {
 								return;
 
 							updateNowPlaying(uuid, nP);
-							Main.logger.info("Updated NowPlaying for " + uuid.toString() + " to " + nP.getTrack() + " by " + nP.getArtist() + " and is playing: " + nP.isPlaying() + " and is local: " + nP.isLocalTrack() + " and Playtime: " + nP.getProgressMs() + "/" + nP.getDurationMs());
+							Main.logger.info("Updated NowPlaying for " + uuid.toString() + " to " + nP.getTrack() + " by " + nP.getArtist() + " and is play code: " + nP.getPlayCode() + " and is local: " + nP.isLocalTrack() + " and Playtime: " + nP.getProgressMs() + "/" + nP.getDurationMs());
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -73,7 +73,7 @@ public class SpotifySyncTask {
 				.prepareStatement("UPDATE mc_users SET spotifyTrack = ?, spotifyArtist = ?, spotifyPlaying = ?, spotifyLocal = ?, spotifyProgressMs = ?, spotifyDurationMs = ? WHERE mcuuid = ?")) {
 			ps.setString(1, nowPlaying.getTrack());
 			ps.setString(2, nowPlaying.getArtist());
-			ps.setBoolean(3, nowPlaying.isPlaying());
+			ps.setInt(3, nowPlaying.getPlayCode());
 			ps.setBoolean(4, nowPlaying.isLocalTrack());
 			ps.setLong(5, nowPlaying.getProgressMs());
 			ps.setLong(6, nowPlaying.getDurationMs());
